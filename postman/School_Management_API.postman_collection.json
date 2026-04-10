@@ -1,0 +1,261 @@
+{
+  "info": {
+    "_postman_id": "school-management-api-collection",
+    "name": "School Management API",
+    "description": "Postman collection for the School Management Node.js API. Includes endpoints to add schools and list schools sorted by proximity.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Health Check",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/",
+          "host": ["{{baseUrl}}"],
+          "path": [""]
+        },
+        "description": "Check if the API server is running."
+      },
+      "response": [
+        {
+          "name": "API Running",
+          "status": "OK",
+          "code": 200,
+          "header": [{ "key": "Content-Type", "value": "application/json" }],
+          "body": "{\n  \"success\": true,\n  \"message\": \"School Management API is running\",\n  \"version\": \"1.0.0\",\n  \"endpoints\": {\n    \"addSchool\": \"POST /addSchool\",\n    \"listSchools\": \"GET /listSchools?latitude=<lat>&longitude=<lon>\"\n  }\n}"
+        }
+      ]
+    },
+    {
+      "name": "Add School",
+      "item": [
+        {
+          "name": "Add School - Success",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Greenwood High School\",\n  \"address\": \"123 Elm Street, Springfield\",\n  \"latitude\": 28.6139,\n  \"longitude\": 77.2090\n}",
+              "options": {
+                "raw": { "language": "json" }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/addSchool",
+              "host": ["{{baseUrl}}"],
+              "path": ["addSchool"]
+            },
+            "description": "Add a new school with valid name, address, latitude, and longitude."
+          },
+          "response": [
+            {
+              "name": "School Added",
+              "status": "Created",
+              "code": 201,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": true,\n  \"message\": \"School added successfully\",\n  \"data\": {\n    \"id\": 1,\n    \"name\": \"Greenwood High School\",\n    \"address\": \"123 Elm Street, Springfield\",\n    \"latitude\": 28.6139,\n    \"longitude\": 77.209\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Add School - Missing Fields (Validation Error)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"\",\n  \"address\": \"123 Elm Street\",\n  \"latitude\": \"invalid\",\n  \"longitude\": 77.209\n}",
+              "options": {
+                "raw": { "language": "json" }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/addSchool",
+              "host": ["{{baseUrl}}"],
+              "path": ["addSchool"]
+            },
+            "description": "Attempt to add a school with invalid data to trigger validation errors."
+          },
+          "response": [
+            {
+              "name": "Validation Error",
+              "status": "Bad Request",
+              "code": 400,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": false,\n  \"message\": \"Validation failed\",\n  \"errors\": [\n    \"name is required and must be a non-empty string\",\n    \"latitude must be a valid number between -90 and 90\"\n  ]\n}"
+            }
+          ]
+        },
+        {
+          "name": "Add School - Second School",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Sunrise Public School\",\n  \"address\": \"456 Oak Avenue, Mumbai\",\n  \"latitude\": 19.0760,\n  \"longitude\": 72.8777\n}",
+              "options": {
+                "raw": { "language": "json" }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/addSchool",
+              "host": ["{{baseUrl}}"],
+              "path": ["addSchool"]
+            },
+            "description": "Add a second school for proximity sorting demonstration."
+          },
+          "response": [
+            {
+              "name": "Second School Added",
+              "status": "Created",
+              "code": 201,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": true,\n  \"message\": \"School added successfully\",\n  \"data\": {\n    \"id\": 2,\n    \"name\": \"Sunrise Public School\",\n    \"address\": \"456 Oak Avenue, Mumbai\",\n    \"latitude\": 19.076,\n    \"longitude\": 72.8777\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Add School - Third School",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Lakeview Academy\",\n  \"address\": \"789 Lake Road, Bangalore\",\n  \"latitude\": 12.9716,\n  \"longitude\": 77.5946\n}",
+              "options": {
+                "raw": { "language": "json" }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/addSchool",
+              "host": ["{{baseUrl}}"],
+              "path": ["addSchool"]
+            },
+            "description": "Add a third school for proximity sorting demonstration."
+          },
+          "response": [
+            {
+              "name": "Third School Added",
+              "status": "Created",
+              "code": 201,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": true,\n  \"message\": \"School added successfully\",\n  \"data\": {\n    \"id\": 3,\n    \"name\": \"Lakeview Academy\",\n    \"address\": \"789 Lake Road, Bangalore\",\n    \"latitude\": 12.9716,\n    \"longitude\": 77.5946\n  }\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "List Schools",
+      "item": [
+        {
+          "name": "List Schools - Sorted by Proximity",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/listSchools?latitude=28.7041&longitude=77.1025",
+              "host": ["{{baseUrl}}"],
+              "path": ["listSchools"],
+              "query": [
+                {
+                  "key": "latitude",
+                  "value": "28.7041",
+                  "description": "User's latitude (Delhi)"
+                },
+                {
+                  "key": "longitude",
+                  "value": "77.1025",
+                  "description": "User's longitude (Delhi)"
+                }
+              ]
+            },
+            "description": "Fetch all schools sorted by proximity to the user's coordinates (Delhi as example)."
+          },
+          "response": [
+            {
+              "name": "Schools List Sorted",
+              "status": "OK",
+              "code": 200,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Schools retrieved and sorted by proximity\",\n  \"count\": 3,\n  \"user_location\": {\n    \"latitude\": 28.7041,\n    \"longitude\": 77.1025\n  },\n  \"data\": [\n    {\n      \"id\": 1,\n      \"name\": \"Greenwood High School\",\n      \"address\": \"123 Elm Street, Springfield\",\n      \"latitude\": 28.6139,\n      \"longitude\": 77.209,\n      \"distance_km\": 11.6924\n    },\n    {\n      \"id\": 3,\n      \"name\": \"Lakeview Academy\",\n      \"address\": \"789 Lake Road, Bangalore\",\n      \"latitude\": 12.9716,\n      \"longitude\": 77.5946,\n      \"distance_km\": 1740.5382\n    },\n    {\n      \"id\": 2,\n      \"name\": \"Sunrise Public School\",\n      \"address\": \"456 Oak Avenue, Mumbai\",\n      \"latitude\": 19.076,\n      \"longitude\": 72.8777,\n      \"distance_km\": 1413.2501\n    }\n  ]\n}"
+            }
+          ]
+        },
+        {
+          "name": "List Schools - Missing Latitude",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/listSchools?longitude=77.1025",
+              "host": ["{{baseUrl}}"],
+              "path": ["listSchools"],
+              "query": [
+                {
+                  "key": "longitude",
+                  "value": "77.1025"
+                }
+              ]
+            },
+            "description": "Attempt to list schools without providing latitude to trigger validation."
+          },
+          "response": [
+            {
+              "name": "Validation Error",
+              "status": "Bad Request",
+              "code": 400,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": false,\n  \"message\": \"Validation failed\",\n  \"errors\": [\n    \"latitude query parameter is required\"\n  ]\n}"
+            }
+          ]
+        },
+        {
+          "name": "List Schools - Invalid Coordinates",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/listSchools?latitude=999&longitude=abc",
+              "host": ["{{baseUrl}}"],
+              "path": ["listSchools"],
+              "query": [
+                { "key": "latitude", "value": "999" },
+                { "key": "longitude", "value": "abc" }
+              ]
+            },
+            "description": "Attempt with out-of-range latitude and non-numeric longitude."
+          },
+          "response": [
+            {
+              "name": "Validation Error - Invalid Coords",
+              "status": "Bad Request",
+              "code": 400,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": false,\n  \"message\": \"Validation failed\",\n  \"errors\": [\n    \"latitude must be a valid number between -90 and 90\",\n    \"longitude must be a valid number between -180 and 180\"\n  ]\n}"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
